@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jorge L. Iglesias — Game Designer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d0f;
+      --surface:   #141418;
+      --surface2:  #1c1c22;
+      --border:    #2a2a35;
+      --accent:    #c084fc;   /* violet — unusual, ownable, not the default acid-green */
+      --accent2:   #f472b6;   /* pink — secondary pop */
+      --text:      #e8e8f0;
+      --muted:     #6b6b80;
+      --display:   'Syne', sans-serif;
+      --body:      'Inter', sans-serif;
+      --mono:      'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 2.5rem;
+      background: rgba(13,13,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--text); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono); font-size: 0.8rem;
+      color: var(--muted); text-decoration: none;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      max-width: 1100px; margin: 0 auto;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono); font-size: 0.78rem;
+      color: var(--accent); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .hero-name {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: 0.95; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 1.5rem;
+    }
+    .hero-name .line2 { color: var(--accent); }
+    .hero-tagline {
+      font-size: 1.15rem; color: var(--muted);
+      max-width: 540px; margin-bottom: 3rem;
+      font-weight: 300; line-height: 1.7;
+    }
+    .hero-tagline strong { color: var(--text); font-weight: 500; }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: 0.75rem 1.75rem;
+      font-family: var(--mono); font-size: 0.8rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; border-radius: 4px;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent); color: #0d0d0f;
+      font-weight: 500;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+    .btn-outline {
+      border: 1px solid var(--border); color: var(--text);
+      background: transparent;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    .hero-tags {
+      margin-top: 4rem; display: flex; gap: 0.75rem; flex-wrap: wrap;
+    }
+    .tag {
+      font-family: var(--mono); font-size: 0.72rem;
+      padding: 0.35rem 0.85rem; border-radius: 99px;
+      border: 1px solid var(--border); color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 6rem 2.5rem;
+    }
+    .section-label {
+      font-family: var(--mono); font-size: 0.75rem;
+      color: var(--accent); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -0.02em; margin-bottom: 3rem;
+      line-height: 1.1;
+    }
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start;
+    }
+    .about-photo {
+      width: 100%; aspect-ratio: 3/4; object-fit: cover;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-placeholder {
+      width: 100%; aspect-ratio: 3/4;
+      background: var(--surface2); border-radius: 8px;
+      border: 1px dashed var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem; color: var(--muted);
+      font-family: var(--mono); font-size: 0.75rem;
+      text-align: center; padding: 1rem;
+    }
+    .photo-placeholder .icon { font-size: 2.5rem; }
+    .about-text p { color: var(--muted); margin-bottom: 1.25rem; line-height: 1.8; }
+    .about-text p strong { color: var(--text); }
+    .about-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-top: 2rem;
+    }
+    .stat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.25rem;
+    }
+    .stat-number {
+      font-family: var(--display); font-weight: 800;
+      font-size: 2rem; color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-top: 0.3rem;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .project-img {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .project-img img { width: 100%; height: 100%; object-fit: cover; }
+    .project-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.4rem; color: var(--muted);
+      font-family: var(--mono); font-size: 0.7rem;
+      text-align: center;
+    }
+    .project-img-placeholder .icon { font-size: 2rem; }
+    .project-status {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      font-family: var(--mono); font-size: 0.65rem;
+      padding: 0.2rem 0.6rem; border-radius: 99px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .status-wip { background: rgba(192,132,252,0.15); color: var(--accent); border: 1px solid rgba(192,132,252,0.3); }
+    .status-done { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
+    .status-jam { background: rgba(244,114,182,0.1); color: var(--accent2); border: 1px solid rgba(244,114,182,0.25); }
+    .project-body { padding: 1.5rem; }
+    .project-role {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--accent); letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .project-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: 1.25rem; margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    .project-desc {
+      font-size: 0.88rem; color: var(--muted);
+      line-height: 1.65; margin-bottom: 1.25rem;
+    }
+    .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .project-tag {
+      font-family: var(--mono); font-size: 0.65rem;
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+      background: var(--surface2); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .project-links { display: flex; gap: 0.75rem; }
+    .project-link {
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--accent); text-decoration: none;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .project-link:hover { border-color: var(--accent); }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .skill-group {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem;
+    }
+    .skill-group-title {
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--accent); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 1rem;
+    }
+    .skill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-pill {
+      font-size: 0.82rem; padding: 0.3rem 0.75rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; color: var(--text);
+    }
+
+    /* ── EXPERIENCE ── */
+    .experience-list { display: flex; flex-direction: column; gap: 0; }
+    .exp-item {
+      display: grid; grid-template-columns: 200px 1fr;
+      gap: 2rem; padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:last-child { border-bottom: none; }
+    .exp-date {
+      font-family: var(--mono); font-size: 0.75rem;
+      color: var(--muted); padding-top: 0.2rem;
+      line-height: 1.5;
+    }
+    .exp-company {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--accent); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-top: 0.3rem;
+    }
+    .exp-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: 1.1rem; margin-bottom: 0.75rem;
+    }
+    .exp-bullets { list-style: none; }
+    .exp-bullets li {
+      font-size: 0.88rem; color: var(--muted);
+      padding: 0.3rem 0 0.3rem 1.25rem;
+      position: relative; line-height: 1.6;
+    }
+    .exp-bullets li::before {
+      content: '→'; position: absolute; left: 0;
+      color: var(--accent); font-size: 0.75rem;
+    }
+
+    /* ── EVENTS ── */
+    .events-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .event-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.75rem;
+      transition: border-color 0.2s;
+    }
+    .event-card:hover { border-color: var(--accent2); }
+    .event-scale {
+      font-family: var(--display); font-weight: 800;
+      font-size: 2.5rem; color: var(--accent2);
+      line-height: 1; margin-bottom: 0.25rem;
+    }
+    .event-name {
+      font-family: var(--display); font-weight: 600;
+      font-size: 1.1rem; margin-bottom: 0.75rem;
+    }
+    .event-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align: center; padding: 6rem 2.5rem;
+    }
+    .contact-inner { max-width: 600px; margin: 0 auto; }
+    .contact-intro {
+      color: var(--muted); font-size: 1.05rem;
+      margin-bottom: 2.5rem; line-height: 1.7;
+    }
+    .contact-links {
+      display: flex; justify-content: center;
+      gap: 1.25rem; flex-wrap: wrap; margin-bottom: 3rem;
+    }
+    .contact-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.8rem;
+      color: var(--text); text-decoration: none;
+      padding: 0.65rem 1.25rem;
+      border: 1px solid var(--border); border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+    .contact-note {
+      font-family: var(--mono); font-size: 0.75rem;
+      color: var(--muted); letter-spacing: 0.04em;
+    }
+    .contact-note span { color: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1100px; margin: 0 auto;
+    }
+    footer p {
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      #hero { padding: 7rem 1.25rem 3rem; }
+      section { padding: 4rem 1.25rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .events-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+
+    /* subtle background grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      background-image:
+        linear-gradient(rgba(192,132,252,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(192,132,252,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">Jorge<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <p class="hero-eyebrow">// Game Designer · Bucaramanga, Colombia · Remote</p>
+  <h1 class="hero-name">
+    Jorge L.<br>
+    <span class="line2">Iglesias</span>
+  </h1>
+  <p class="hero-tagline">
+    I design <strong>systems, economies, and player experiences</strong> that keep people engaged. Engineering degree in digital entertainment. Bilingual. Shipping games since 2020.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">See My Work</a>
+    <a href="mailto:jorgeiglesiasgamedev@gmail.com" class="btn btn-outline">Get In Touch</a>
+  </div>
+  <div class="hero-tags">
+    <span class="tag">Systems Design</span>
+    <span class="tag">Game Economy</span>
+    <span class="tag">Narrative Design</span>
+    <span class="tag">Multiplayer</span>
+    <span class="tag">Unity / C#</span>
+    <span class="tag">Playtesting</span>
+    <span class="tag">Level Design</span>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label">// 001 — About</p>
+  <h2 class="section-title">The designer<br>behind the systems</h2>
+  <div class="about-grid">
+    <div>
+      <div class="photo-placeholder">
+        <span class="icon">📷</span>
+        <span>Add your photo here<br>(replace with &lt;img&gt; tag)</span>
+      </div>
+    </div>
+    <div class="about-text">
+      <p>I'm a game designer with a <strong>B.S. in Engineering — Digital Entertainment Design</strong> from Universidad Pontificia Bolivariana. I specialize in systems-driven gameplay, player progression, game economies, and risk–reward mechanics.</p>
+      <p>My background is cross-disciplinary: I design, prototype, playtest, and when needed, implement in Unity with C#. I believe great game design is inseparable from iteration — I build to test, not to ship the first draft.</p>
+      <p>Outside of game design, I've organized large-scale community events in Bucaramanga — scaling from 15 to <strong>1,500 attendees</strong> — which sharpened my instincts around engagement, pacing, and what makes people actually show up.</p>
+      <p>I'm based in Colombia, working <strong>remotely</strong>, and open to relocation for the right opportunity. Fluent in Spanish (native) and English (near-native, C1 certified).</p>
+      <div class="about-stats">
+        <div class="stat">
+          <div class="stat-number">4+</div>
+          <div class="stat-label">Years designing games</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">1,500</div>
+          <div class="stat-label">Max event attendees</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Languages</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">4+</div>
+          <div class="stat-label">Shipped projects</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label">// 002 — Projects</p>
+  <h2 class="section-title">What I've built</h2>
+  <div class="projects-grid">
+
+    <!-- Adrenaline -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <span class="icon">🃏</span>
+          <span>Add prototype photos here</span>
+        </div>
+        <span class="project-status status-wip">In Development</span>
+      </div>
+      <div class="project-body">
+        <p class="project-role">Game Designer & Developer</p>
+        <h3 class="project-title">Adrenaline</h3>
+        <p class="project-desc">A social multiplayer party game for 4–16 players built around risk and player-driven interaction. Designed a card-based physical prototype to validate mechanics before digital development, including an in-game economy where players can skip, redirect, reroll dares, or target others. Iterated through 3 live playtesting sessions.</p>
+        <div class="project-tags">
+          <span class="project-tag">Systems Design</span>
+          <span class="project-tag">Game Economy</span>
+          <span class="project-tag">Multiplayer</span>
+          <span class="project-tag">Physical Prototype</span>
+          <span class="project-tag">Playtesting</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Millennium Warrior -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <span class="icon">⚔️</span>
+          <span>Add screenshots here</span>
+        </div>
+        <span class="project-status status-done">Playable</span>
+      </div>
+      <div class="project-body">
+        <p class="project-role">Lead Game Designer & Narrative Designer</p>
+        <h3 class="project-title">Millennium Warrior</h3>
+        <p class="project-desc">A narrative-driven arena combat game built in Unity, inspired by historical warriors. Designed boss mechanics tied to story progression, with each victory advancing the narrative arc. Features a roguelike structure where players face fighters across different eras.</p>
+        <div class="project-tags">
+          <span class="project-tag">Unity</span>
+          <span class="project-tag">Narrative Design</span>
+          <span class="project-tag">Boss Design</span>
+          <span class="project-tag">Roguelike</span>
+        </div>
+        <div class="project-links">
+          <a href="https://drive.google.com/open?id=18mlzsOktvTz8JNkFBcfw64-JXwWw9PgJ" target="_blank" class="project-link">↓ Download</a>
+          <a href="https://docs.google.com/document/d/1fkLFKbkSw5Zq-MYHwq4NrqhXJHo81BrrMEAHLDvtvVQ/edit?usp=sharing" target="_blank" class="project-link">📄 GDD</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fuck You Asteroids -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <span class="icon">🚀</span>
+          <span>Add screenshots here</span>
+        </div>
+        <span class="project-status status-done">Playable</span>
+      </div>
+      <div class="project-body">
+        <p class="project-role">Lead Game Designer</p>
+        <h3 class="project-title">Asteroid Escape</h3>
+        <p class="project-desc">A space shooter where players must avoid or destroy asteroids to survive. Focused on tight feel, escalating difficulty, and player agency. Includes full design documentation covering mechanics, flow, and balancing decisions.</p>
+        <div class="project-tags">
+          <span class="project-tag">GameMaker</span>
+          <span class="project-tag">Difficulty Scaling</span>
+          <span class="project-tag">Arcade</span>
+        </div>
+        <div class="project-links">
+          <a href="https://drive.google.com/open?id=1AwvHlHl3Bwkrxl__OWl9pUt-wEBFCAwv" target="_blank" class="project-link">↓ Download</a>
+          <a href="https://docs.google.com/presentation/d/1T2Cw3F93wwNsnreFi5X7VGXG4QDvcdYaiGmezNpI4PU/edit?usp=sharing" target="_blank" class="project-link">📄 GDD</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Runny Bunny -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <span class="icon">🐇</span>
+          <span>Add screenshots here</span>
+        </div>
+        <span class="project-status status-done">Playable</span>
+      </div>
+      <div class="project-body">
+        <p class="project-role">Game Designer & Programmer</p>
+        <h3 class="project-title">Runny Bunny</h3>
+        <p class="project-desc">An infinite 2D runner centered on a calorie balance mechanic — players must manage survival against score optimization, creating a natural risk-reward tension that escalates over time.</p>
+        <div class="project-tags">
+          <span class="project-tag">Risk-Reward</span>
+          <span class="project-tag">Infinite Runner</span>
+          <span class="project-tag">2D</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- It's Just a Nightmare -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <span class="icon">🌙</span>
+          <span>Add screenshots here</span>
+        </div>
+        <span class="project-status status-done">Playable</span>
+      </div>
+      <div class="project-body">
+        <p class="project-role">Game Designer & Programmer</p>
+        <h3 class="project-title">It's Just a Nightmare</h3>
+        <p class="project-desc">A 2D platformer built in GameMaker featuring transformation-based puzzle mechanics. Players shift between states to navigate environments and solve challenges tied to the transformation system.</p>
+        <div class="project-tags">
+          <span class="project-tag">GameMaker</span>
+          <span class="project-tag">Puzzle Design</span>
+          <span class="project-tag">Platformer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Game Jam 2019 -->
+    <div class="project-card">
+      <div class="project-img">
+        <div class="project-img-placeholder">
+          <span class="icon">🧩</span>
+          <span>Add screenshots here</span>
+        </div>
+        <span class="project-status status-jam">Game Jam</span>
+      </div>
+      <div class="project-body">
+        <p class="project-role">Game Designer</p>
+        <h3 class="project-title">Global Game Jam 2019</h3>
+        <p class="project-desc">A puzzle game built during the 2019 Global Game Jam — players have lost their memory and must piece it back together. Designed around a constrained theme under a 48-hour deadline.</p>
+        <div class="project-tags">
+          <span class="project-tag">Game Jam</span>
+          <span class="project-tag">Puzzle</span>
+          <span class="project-tag">48h Sprint</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label">// 003 — Skills</p>
+  <h2 class="section-title">Tools & expertise</h2>
+  <div class="skills-grid">
+    <div class="skill-group">
+      <p class="skill-group-title">Game Design</p>
+      <div class="skill-list">
+        <span class="skill-pill">Systems Design</span>
+        <span class="skill-pill">Mechanics Design</span>
+        <span class="skill-pill">Game Economy</span>
+        <span class="skill-pill">Player Progression</span>
+        <span class="skill-pill">Difficulty Scaling</span>
+        <span class="skill-pill">Risk–Reward</span>
+        <span class="skill-pill">Narrative Design</span>
+        <span class="skill-pill">Level Design</span>
+        <span class="skill-pill">Playtesting</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <p class="skill-group-title">Engines & Programming</p>
+      <div class="skill-list">
+        <span class="skill-pill">Unity</span>
+        <span class="skill-pill">C# (Intermediate–Advanced)</span>
+        <span class="skill-pill">GameMaker</span>
+        <span class="skill-pill">Unreal Engine (Learning)</span>
+        <span class="skill-pill">C++ (Basic)</span>
+        <span class="skill-pill">Java (Basic)</span>
+        <span class="skill-pill">Python (Basic)</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <p class="skill-group-title">Tools & Software</p>
+      <div class="skill-list">
+        <span class="skill-pill">GitHub</span>
+        <span class="skill-pill">Photoshop</span>
+        <span class="skill-pill">Blender</span>
+        <span class="skill-pill">Krita</span>
+        <span class="skill-pill">OBS Studio</span>
+        <span class="skill-pill">Audacity</span>
+        <span class="skill-pill">Reaper</span>
+        <span class="skill-pill">Excel / Google Sheets</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <p class="skill-group-title">Languages</p>
+      <div class="skill-list">
+        <span class="skill-pill">Spanish (Native)</span>
+        <span class="skill-pill">English (Near-Native, C1)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label">// 004 — Experience</p>
+  <h2 class="section-title">Where I've worked</h2>
+  <div class="experience-list">
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-date">Apr 2021 — Present</div>
+        <div class="exp-company">Self-Employed</div>
+      </div>
+      <div>
+        <h3 class="exp-title">Independent Game Developer</h3>
+        <ul class="exp-bullets">
+          <li>Designed and developed gameplay systems in Unity using C#, with a focus on systems balance and player flow</li>
+          <li>Prototyped mechanics-focused and narrative-driven gameplay experiences across multiple projects</li>
+          <li>Iterated on game economies, difficulty scaling, and usability through live playtesting sessions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-date">Aug 2020 — Apr 2021</div>
+        <div class="exp-company">Blowing Breeze Studio</div>
+      </div>
+      <div>
+        <h3 class="exp-title">Junior Programmer & Game Design Assistant</h3>
+        <ul class="exp-bullets">
+          <li>Implemented gameplay systems and UI features in Unity as part of a 4-person team</li>
+          <li>Assisted in the design of mechanics focused on balance and in-game economy</li>
+          <li>Collaborated with designers and programmers through iterative development cycles</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-date">2025 — Feb 2026</div>
+        <div class="exp-company">Smart Academy</div>
+      </div>
+      <div>
+        <h3 class="exp-title">English Teacher / ESL Instructor</h3>
+        <ul class="exp-bullets">
+          <li>Planned and delivered structured English lessons in small groups (max 6 students), adapting to rotating learner cohorts</li>
+          <li>Designed interactive activities to maintain engagement; adapted content dynamically based on learner feedback</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-date">Dec 2024 — May 2025</div>
+        <div class="exp-company">Teleperformance</div>
+      </div>
+      <div>
+        <h3 class="exp-title">Expert Customer Support Officer — Disney+ / Hulu</h3>
+        <ul class="exp-bullets">
+          <li>De-escalated complex user issues while maintaining brand experience standards for Disney+ and Hulu</li>
+          <li>Diagnosed technical, billing, and subscription-related problems and delivered clear resolutions</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- EVENTS -->
+<section id="events">
+  <p class="section-label">// 005 — Community</p>
+  <h2 class="section-title">Event production<br>& community building</h2>
+  <div class="events-grid">
+    <div class="event-card">
+      <div class="event-scale">~1,500</div>
+      <h3 class="event-name">Akatsuki Store — Anime Events</h3>
+      <p class="event-desc">Organized approximately 4 large-scale anime events per year for ~4 years in Bucaramanga, Colombia. Responsible for logistics, activity design for attendees, ticket sales, and presenting to live audiences in the main theater. Events reached up to 1,500 attendees.</p>
+    </div>
+    <div class="event-card">
+      <div class="event-scale">~150</div>
+      <h3 class="event-name">Clan Amube — Independent Events</h3>
+      <p class="event-desc">Founded and ran an independent anime community group, organizing roughly 2 events per month for 3 years. Handled all logistics, promotion, and execution end-to-end. Events ranged from 15 to 150 attendees.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label" style="text-align:center;">// 006 — Contact</p>
+    <h2 class="section-title" style="text-align:center;">Let's make<br>something great</h2>
+    <p class="contact-intro">I'm actively looking for game design roles — remote or relocation. If you're building something interesting and need a designer who thinks in systems, let's talk.</p>
+    <div class="contact-links">
+      <a href="mailto:jorgeiglesiasgamedev@gmail.com" class="contact-link">✉ Email</a>
+      <a href="https://linkedin.com/in/jorge-luis-iglesias-hasbon-666066188" target="_blank" class="contact-link">in LinkedIn</a>
+      <a href="https://github.com/TrapReaper" target="_blank" class="contact-link">⌥ GitHub</a>
+    </div>
+    <p class="contact-note">Based in Bucaramanga, Colombia · <span>Remote-first · Open to relocation</span></p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Jorge L. Iglesias</p>
+  <p>Game Designer · Bucaramanga, Colombia</p>
+</footer>
+
+</body>
+</html>
